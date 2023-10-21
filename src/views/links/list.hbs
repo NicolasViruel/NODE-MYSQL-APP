@@ -12,11 +12,21 @@
                         </a>
                         <p class="m-2">{{descripcion}}</p>
                         <p> {{timeago create_at}} </p>
-                        <a href="" class="btn btn-danger">Delete Link</a>
-                        <a href="" class="btn btn-secondary">Edit</a>
+                        {{!-- para que a todos los botones delete te leven a la ruta --}}
+                        <a href="/api/{{id}}" class="btn btn-danger">Delete Link</a> 
+                        <a href="/api/edit/{{id}}" class="btn btn-secondary">Edit</a>
                     </div>
                 </div>    
             </div>
+            {{!-- si no hay ningun enlace dejamos un mensaje de la siguiente manera --}}
+            {{else}}
+                <div class="col-md-4 mx-auto">
+                    <div class="card card-body text-center">
+                        <p>There are not links saved yet.</p>
+                        <a href="/api/links">Create One!</a>
+                    </div>
+                </div>
+
         {{/each}}
     </div>
 </div>

@@ -31,9 +31,57 @@ const showLinks = async (req, res) =>{
     res.render('links/list', { links: links});
 };
 
+const deleteLinks = async (req, res) =>{
+    const {id } = req.params;
+    await pool.query('DELETE FROM links WHERE ID = ?' , [id]);
+    res.redirect('/api/showlinks')
+};
+
+
+
+// const updateLinks = async (req, res) =>{
+//     const {id} = req.params;
+//     const links = await pool.query('SELECT * FROM links WHERE IS id = ?', [id] );
+//     console.log(links[0]);
+//     res.render('/links/edit', {links: links[0]}, )
+// };
+const updateLink = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const links = await pool.query('SELECT * FROM links WHERE id = ?', [id]);
+        console.log(links[0]);
+        // Verificar si se encontró un enlace con el ID dado
+        if (links.length === 0) {
+            return res.status(404).send('Link not found');
+        }
+
+        // Renderizar la vista de edición con los datos del enlace encontrado
+        res.render('links/edit', { link: links[0] });
+
+    } catch (error) {
+        console.error('Error fetching link:', error);
+        res.status(500).send('Internal Server Error');
+    }
+};
+
+const newLink = async (req, res) =>{
+    const {id} = req.params;
+    const {title, url, descripcion} = req.body;
+    const newLink = {
+        title,
+        descripcion,
+        url,
+    };
+    await pool.query('UPDATE links set ? WHERE id = ?', [newLink, id]);
+    res.redirect('/api/showlinks')
+};
+
 
 module.exports= {
     getUsers,
     addLinks,
-    showLinks
+    showLinks,
+    deleteLinks,
+    updateLink,
+    newLink
 }
