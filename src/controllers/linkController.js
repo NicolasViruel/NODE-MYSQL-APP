@@ -10,12 +10,13 @@ const addLinks = async (req, res) => {
         const { title, url, descripcion } = req.body;
         const newLink = {
             title,
-            url,
+            url,  
             descripcion
         };
 
         // Realiza la inserción en la base de datos
         await pool.query('INSERT INTO links SET ?', [newLink]);
+        req.flash('success' , 'Link saved successfully');
 
         res.redirect('/api/showlinks');
         console.log("New link added:", newLink);
@@ -34,17 +35,11 @@ const showLinks = async (req, res) =>{
 const deleteLinks = async (req, res) =>{
     const {id } = req.params;
     await pool.query('DELETE FROM links WHERE ID = ?' , [id]);
+    req.flash('success', 'Links Removed successfully')
     res.redirect('/api/showlinks')
 };
 
 
-
-// const updateLinks = async (req, res) =>{
-//     const {id} = req.params;
-//     const links = await pool.query('SELECT * FROM links WHERE IS id = ?', [id] );
-//     console.log(links[0]);
-//     res.render('/links/edit', {links: links[0]}, )
-// };
 const updateLink = async (req, res) => {
     try {
         const { id } = req.params;
@@ -73,6 +68,7 @@ const newLink = async (req, res) =>{
         url,
     };
     await pool.query('UPDATE links set ? WHERE id = ?', [newLink, id]);
+    req.flash('success' , 'Link Updated Successfully');
     res.redirect('/api/showlinks')
 };
 

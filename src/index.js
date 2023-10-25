@@ -3,6 +3,11 @@ const morgan = require("morgan");
 const {engine} = require('express-handlebars');
 const path = require('path')
 const router = require("./routes") //routers
+const flash = require('connect-flash');
+const session = require('express-session');
+const MySQLStore = require("express-mysql-session")(session);
+const { database } = require('./keys');
+
 //Initializations
 const app = express();
 
@@ -12,7 +17,6 @@ app.set('views', path.join(__dirname,  'views' )); //establezco donde esta la ca
 
 //Public
 app.use(express.static(path.join(__dirname, 'public')));
-// app.use(express.static('public'))
 
 app.engine('.hbs', engine({ //configuracion
     defaultLayout: 'main',
@@ -23,16 +27,27 @@ app.engine('.hbs', engine({ //configuracion
 }));
 app.set('view engine', '.hbs'); //utilizamos nuestro handlebars
 
-////configure url-json
+
+//configure url-json // Middlewares // Conexion de sesiones guardadas en la base de datos
+app.use(session({
+    secret: 'nodemysqlsession',
+    resave: false,
+    saveUninitialized: false,
+    store: new MySQLStore(database)
+}));
+
+
+app.use(flash());
 app.use(morgan('dev'));
 app.use(express.urlencoded({extended:false}));
 app.use(express.json());
 
 //Global Variables
+app.use( (req, res,next) =>{
+    app.locals.success = req.flash('success')
+    next();
+});
 
-
-//Routes
-// app.use(require('./routes'))
 
 //base route path
 const apiRoute = process.env.API_URL || '/api';
