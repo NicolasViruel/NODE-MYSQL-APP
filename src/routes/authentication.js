@@ -3,6 +3,11 @@ const authControllers = require("../controllers/authController");
 const router = express.Router();
 
 //routes
-router.get('/', authControllers.getUsers);
+router.get('/singup', authControllers.getUsers);
+
+router.post('/singup', authControllers.createUser);
+
+router.get('/profile', authControllers.profile);
+
 
 module.exports = router;
