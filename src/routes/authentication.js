@@ -9,5 +9,9 @@ router.post('/singup', authControllers.createUser);
 
 router.get('/profile', authControllers.profile);
 
+router.get('/singin', authControllers.singinRedirect);
+
+router.post('/singin', authControllers.singin);
+
 
 module.exports = router;
